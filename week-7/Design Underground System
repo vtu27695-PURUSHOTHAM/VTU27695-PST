@@ -1,0 +1,59 @@
+**Problem:** Design a railway system that records check-in and check-out times and calculates the average travel time between two stations.
+
+```java
+import java.util.*;
+
+class UndergroundSystem {
+
+    class CheckIn {
+        String station;
+        int time;
+
+        CheckIn(String station, int time) {
+            this.station = station;
+            this.time = time;
+        }
+    }
+
+    class Route {
+        int total;
+        int count;
+
+        Route(int total, int count) {
+            this.total = total;
+            this.count = count;
+        }
+    }
+
+    HashMap<Integer, CheckIn> checkins = new HashMap<>();
+    HashMap<String, Route> routes = new HashMap<>();
+
+    public UndergroundSystem() {}
+
+    public void checkIn(int id, String stationName, int t) {
+        checkins.put(id, new CheckIn(stationName, t));
+    }
+
+    public void checkOut(int id, String stationName, int t) {
+        CheckIn c = checkins.get(id);
+        int time = t - c.time;
+
+        String route = c.station + "#" + stationName;
+
+        if (!routes.containsKey(route)) {
+            routes.put(route, new Route(time, 1));
+        } else {
+            Route r = routes.get(route);
+            r.total += time;
+            r.count++;
+        }
+
+        checkins.remove(id);
+    }
+
+    public double getAverageTime(String startStation, String endStation) {
+        Route r = routes.get(startStation + "#" + endStation);
+        return (double) r.total / r.count;
+    }
+}
+```
